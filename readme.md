@@ -1,5 +1,7 @@
 # FunctionForwarder
 
+C++ Only
+
 the principle of the Function Forwarder is to treat Functions the same as in haskell.
 
 Example: let's admit a function as follow; int -> float -> std::string -> std::string in your current scope you can only give it a std::string and a int.
