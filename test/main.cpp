@@ -8,16 +8,17 @@
 #include "FunctionForwarder.hpp"
 
 int fun(float y, int x, std::string str) {
-    return 4;
+    return y;
 }
 
 int main()
 {
     auto ff = createForwarder(fun);
+    float x = 0;
     int y = 0;
     std::string l = "DD";
 
-    auto finalF =  ff.forwarderSimple(fun, y, y, l);
+    auto finalF =  ff.forwarderSimple(fun, x, y, l);
 
     if (finalF != nullptr) {
         std::cout << "Forwarding successfull" << std::endl;

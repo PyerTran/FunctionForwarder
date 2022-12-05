@@ -104,12 +104,12 @@ class FunctionForwarder
             std::vector<std::string> listOfGiven = { typeid(givenTypes).name()... };
             std::vector<std::string> listOfAwaited = { typeid(Types).name()... };
             for (size_t i = 0; i < listOfAwaited.size(); i += 1) {
-                if (i < listOfAwaited.size())
+                if (i < listOfGiven.size())
                     std::cerr << "GIVEN typename " << i << " " << listOfGiven.at(i) << std::endl;
                 else {
                     std::cerr << "GIVEN out of range"<< std::endl;
                 }
-                std::cerr << "AWAITED typename " << i << " " << listOfGiven.at(i) << std::endl;
+                std::cerr << "AWAITED typename " << i << " " << listOfAwaited.at(i) << std::endl;
             }
             for (int i = 0; i < listOfAwaited.size(); i += 1) {
                 if ((std::find(listOfGiven.begin(), listOfGiven.end(), listOfAwaited[i])==listOfGiven.end())) {
