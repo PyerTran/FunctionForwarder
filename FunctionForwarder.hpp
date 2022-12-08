@@ -13,6 +13,7 @@
 #include <vector>
 #include <utility>
 #include <memory>
+#include <vector>
 #include <functional>
 
 template<class...>struct types
@@ -31,67 +32,14 @@ constexpr size_t getArgumentCount(R(*f)(Types ...))
    return sizeof...(Types);
 }
 
-//template <typename Fun, typename ... Types>
-//std::function<decltype(Fun)(Types)>
-
-//template <typename Fun, typename ... Types>
-//std::function<decltype(Fun())> FunctionForwarder(Fun f,Types ... arg)
-//{
-//    int given_n_arg = sizeof...(Types);
-//    size_t awaits_n_arg = getArgumentCount(f);
-//    std::cerr << "functions was given: " << given_n_arg << " and awaited: "<< awaits_n_arg << std::endl;
-//}
-
-//template <typename R, typename ... Types>
-//class FunctionForwarder
-//{
-//    private:
-//        constexpr size_t getArgumentCount(R(*f)(Types ...))
-//        {
-//           return sizeof...(Types);
-//        }
-//
-//        int number_args;
-//    public:
-//        FunctionForwarder(R(*f)(Types ...)) {
-//            this->number_args = getArgumentCount(f);
-//        }
-//        ~FunctionForwarder() {
-//        }
-//
-//        template <typename ... givenTypes>
-//        std::function<R()> forwarder(R(*f)(Types ...), givenTypes ... args) {
-//            std::vector<std::string> listOfGiven = { typeid(givenTypes).name()... };
-//            std::vector<std::string> listOfAwaited = { typeid(Types).name()... };
-//            for (size_t i = 0; i < listOfGiven.size(); i += 1) {
-//                std::cerr << "typename " << i << " " << listOfGiven.at(i) << std::endl;
-//            }
-//        }
-//};
-//
-
 template <typename R, typename ... Types>
 class FunctionForwarder
 {
     private:
-        using returnType = void;
-        using argTypes = void;
+        std::vector<std::string> awaited_args;
+        std::vector<std::string> given_args;
+        std::vector<std::string> needed_args;
 
-        std::function<returnType(argTypes)> func = 0;
-        
-        //constexpr size_t getArgumentCount(R(*f)(Types ...))
-        //{
-        //   return sizeof...(Types);
-        //}
-//
-        //template <typename ... givenTypes>
-        //std::function<R()> forwarder(R(*f)(Types ...), givenTypes ... args) {
-        //    std::vector<std::string> listOfGiven = { typeid(givenTypes).name()... };
-        //    std::vector<std::string> listOfAwaited = { typeid(Types).name()... };
-        //    for (size_t i = 0; i < listOfGiven.size(); i += 1) {
-        //        std::cerr << "typename " << i << " " << listOfGiven.at(i) << std::endl;
-        //    }
-        //}
     public:
 
         constexpr size_t getArgumentCount(R(*f)(Types ...))
@@ -122,10 +70,31 @@ class FunctionForwarder
             return res;
         }
 
+        template <typename T, typename ... givenTypes>
+        std::function<T> forwarderJumbo(givenTypes ... args) {
+            std::vector<std::string> given = { typeid(givenTypes).name()... };
+            bool found = false;
+
+            for (int i = 0; given.size(); i += 1) {
+                found = false;
+                for (int j = 0; this->awaited_args.size(); j += 1) { 
+                    if (given[i].compare(this->awaited_args[j]) == 0) {
+                        found = true
+                        break;
+                    }    
+                }
+                if (!found) {
+                    this->needed_args.push_back(this->awaited_args[j]);
+                }
+            }
+            // cant make another arg pack, paradox in the return value
+            std::function<T> res = [=] () {
+
+            };
+        }
+
         FunctionForwarder(R(*f)(Types ...)) {
-            //this->returnType = R;
-            //this->argTypes = Types;
-            //this->func = f;
+            this->awaited_args = { typeid(Types).name()... };
         }
 
         ~FunctionForwarder() {
